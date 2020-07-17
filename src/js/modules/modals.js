@@ -1,28 +1,41 @@
 const modals = () => {
-    function bindModal(triggerSelector, modalSelector, closeSelector) {
+    function bindModal(triggerSelector, modalSelector, closeSelector, closeClickOverlay = true) {
 
         const trigger = document.querySelectorAll(triggerSelector),
               modal = document.querySelector(modalSelector),
-              close = document.querySelector(closeSelector);
+              close = document.querySelector(closeSelector),
+              windows = document.querySelectorAll('[data-modal]');
 
         trigger.forEach(item => {
             item.addEventListener('click', (e) => {
-                if(e.target) {
+                if (e.target) {
                     e.preventDefault();
                 }
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
+
+                windows.forEach(item => {
+                    item.style.display = 'none';
+                });
+    
+                modal.style.display = "block";
+                document.body.style.overflow = "hidden";
+                document.body.style.marginRight = `${scroll}px`;
                 // document.body.classList.add('modal-open');
             });
         });
         close.addEventListener('click', () => {
             modal.style.display = 'none';
+            windows.forEach(item => {
+                item.style.display = 'none';
+            });
             document.body.style.overflow = '';
             // document.body.classList.remove('modal-open');
         });
 
         modal.addEventListener('click', (e) => {
-            if(e.target === modal) {
+            if(e.target === modal && closeClickOverlay) {
+                windows.forEach(item => {
+                    item.style.display = 'none';
+                });
                 modal.style.display = 'none';
                 document.body.style.overflow = ''; 
                 // document.body.classList.remove('modal-open');
@@ -31,10 +44,13 @@ const modals = () => {
     
         
     }
-    
+
         
     bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
     bindModal('.phone_link', '.popup', '.popup .popup_close');
+    bindModal('.popup_calc_btn', '.popup_calc', '.popup_calc_close');
+    bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false);
+    bindModal('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close', false);
 
     function showModalByTime(selector, time) {
         setTimeout(() => {
@@ -44,6 +60,7 @@ const modals = () => {
     }
 
     // showModalByTime('.popup', 60000);
+
 
     
 };
